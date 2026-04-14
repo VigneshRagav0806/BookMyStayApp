@@ -1,185 +1,115 @@
 import java.util.*;
 
-/**
- * ============================================================
- * CLASS - Reservation
- * ============================================================
- */
-class Reservation {
-    private String guestName;
-    private String roomType;
+// Represents an Add-On Service
+class AddOnService {
+    private String serviceName;
+    private double cost;
 
-    public Reservation(String guestName, String roomType) {
-        this.guestName = guestName;
-        this.roomType = roomType;
+    public AddOnService(String serviceName, double cost) {
+        this.serviceName = serviceName;
+        this.cost = cost;
     }
 
-    public String getGuestName() {
-        return guestName;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public String getRoomType() {
-        return roomType;
-    }
-}
-
-
-/**
- * ============================================================
- * CLASS - RoomInventory
- * ============================================================
- * Maintains available room counts.
- */
-class RoomInventory {
-    private Map<String, Integer> inventory;
-
-    public RoomInventory() {
-        inventory = new HashMap<>();
-        inventory.put("Single", 2);
-        inventory.put("Double", 2);
-        inventory.put("Suite", 1);
+    public double getCost() {
+        return cost;
     }
 
-    public boolean isAvailable(String roomType) {
-        return inventory.getOrDefault(roomType, 0) > 0;
-    }
-
-    public void allocateRoom(String roomType) {
-        inventory.put(roomType, inventory.get(roomType) - 1);
+    @Override
+    public String toString() {
+        return serviceName + " (₹" + cost + ")";
     }
 }
 
+// Manages Add-On Services for Reservations
+class AddOnServiceManager {
 
-/**
- * ============================================================
- * CLASS - BookingRequestQueue (FIFO)
- * ============================================================
- */
-class BookingRequestQueue {
-    private Queue<Reservation> requestQueue;
+    // Map: Reservation ID -> List of Services
+    private Map<String, List<AddOnService>> reservationServicesMap = new HashMap<>();
 
-    public BookingRequestQueue() {
-        requestQueue = new LinkedList<>();
+    // Add service to reservation
+    public void addService(String reservationId, AddOnService service) {
+        reservationServicesMap
+                .computeIfAbsent(reservationId, k -> new ArrayList<>())
+                .add(service);
     }
 
-    public void addRequest(Reservation reservation) {
-        requestQueue.offer(reservation);
+    // Get services for a reservation
+    public List<AddOnService> getServices(String reservationId) {
+        return reservationServicesMap.getOrDefault(reservationId, new ArrayList<>());
     }
 
-    public Reservation getNextRequest() {
-        return requestQueue.poll();
+    // Calculate total additional cost
+    public double calculateTotalCost(String reservationId) {
+        List<AddOnService> services = getServices(reservationId);
+        double total = 0;
+
+        for (AddOnService service : services) {
+            total += service.getCost();
+        }
+
+        return total;
     }
 
-    public boolean hasPendingRequests() {
-        return !requestQueue.isEmpty();
-    }
-}
+    // Display services
+    public void displayServices(String reservationId) {
+        List<AddOnService> services = getServices(reservationId);
 
-
-/**
- * ============================================================
- * CLASS - RoomAllocationService
- * ============================================================
- *
- * Use Case 6: Reservation Confirmation & Room Allocation
- *
- * Ensures:
- * - Unique room IDs
- * - No double booking
- * - Inventory updated immediately
- *
- * @version 6.0
- */
-class RoomAllocationService {
-
-    /** Stores all allocated room IDs */
-    private Set<String> allocatedRoomIds;
-
-    /** RoomType -> Assigned Room IDs */
-    private Map<String, Set<String>> assignedRoomsByType;
-
-    /** Constructor */
-    public RoomAllocationService() {
-        allocatedRoomIds = new HashSet<>();
-        assignedRoomsByType = new HashMap<>();
-    }
-
-    /**
-     * Allocates room if available
-     */
-    public void allocateRoom(Reservation reservation, RoomInventory inventory) {
-
-        String roomType = reservation.getRoomType();
-
-        if (!inventory.isAvailable(roomType)) {
-            System.out.println("No " + roomType + " rooms available for " + reservation.getGuestName());
+        if (services.isEmpty()) {
+            System.out.println("No add-on services selected.");
             return;
         }
 
-        String roomId = generateRoomId(roomType);
+        System.out.println("Selected Add-On Services:");
+        for (AddOnService service : services) {
+            System.out.println("- " + service);
+        }
 
-        // store allocated room
-        allocatedRoomIds.add(roomId);
-
-        assignedRoomsByType
-                .computeIfAbsent(roomType, k -> new HashSet<>())
-                .add(roomId);
-
-        // update inventory
-        inventory.allocateRoom(roomType);
-
-        System.out.println("Booking CONFIRMED for " + reservation.getGuestName()
-                + " | Room Type: " + roomType
-                + " | Room ID: " + roomId);
-    }
-
-    /**
-     * Generates unique room ID
-     */
-    private String generateRoomId(String roomType) {
-
-        String prefix = roomType.substring(0, 1).toUpperCase();
-        String roomId;
-
-        do {
-            roomId = prefix + (100 + new Random().nextInt(900));
-        } while (allocatedRoomIds.contains(roomId));
-
-        return roomId;
+        System.out.println("Total Add-On Cost: ₹" + calculateTotalCost(reservationId));
     }
 }
 
-
-/**
- * ============================================================
- * MAIN CLASS - UseCase6RoomAllocation
- * ============================================================
- *
- * Demonstrates FIFO booking + safe allocation
- *
- * @version 6.0
- */
-public class UseCase6RoomAllocation {
+// Main Class
+public class UseCase7AddOnServiceSelection {
 
     public static void main(String[] args) {
 
-        System.out.println("Room Allocation System");
+        Scanner scanner = new Scanner(System.in);
+        AddOnServiceManager manager = new AddOnServiceManager();
 
-        // Initialize
-        BookingRequestQueue queue = new BookingRequestQueue();
-        RoomInventory inventory = new RoomInventory();
-        RoomAllocationService service = new RoomAllocationService();
+        System.out.print("Enter Reservation ID: ");
+        String reservationId = scanner.nextLine();
 
-        // Create requests
-        queue.addRequest(new Reservation("Abhi", "Single"));
-        queue.addRequest(new Reservation("Subha", "Double"));
-        queue.addRequest(new Reservation("Ram", "Suite"));
-        queue.addRequest(new Reservation("Kiran", "Suite")); // should fail (only 1)
+        while (true) {
+            System.out.println("\nChoose Add-On Service:");
+            System.out.println("1. Breakfast (₹500)");
+            System.out.println("2. Airport Pickup (₹1000)");
+            System.out.println("3. Extra Bed (₹800)");
+            System.out.println("4. Finish Selection");
 
-        // Process FIFO
-        while (queue.hasPendingRequests()) {
-            Reservation r = queue.getNextRequest();
-            service.allocateRoom(r, inventory);
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    manager.addService(reservationId, new AddOnService("Breakfast", 500));
+                    break;
+                case 2:
+                    manager.addService(reservationId, new AddOnService("Airport Pickup", 1000));
+                    break;
+                case 3:
+                    manager.addService(reservationId, new AddOnService("Extra Bed", 800));
+                    break;
+                case 4:
+                    System.out.println("\nFinal Summary for Reservation ID: " + reservationId);
+                    manager.displayServices(reservationId);
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
         }
     }
 }
