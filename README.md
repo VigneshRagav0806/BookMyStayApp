@@ -1,102 +1,58 @@
-# 🏨 Book My Stay – Hotel Booking Management System
-
-## 📌 Overview
-
-* Console-based hotel booking system using Core Java
-* Focuses on real-world application of data structures and OOP
-* Emphasizes core logic over UI design
-* Built incrementally through multiple use cases
-
----
-
-## 🎯 Use Case 7: Add-On Service Selection
-
-* Adds support for optional services to reservations
-* Does not modify core booking or inventory logic
-
----
-
-## 👥 Actors
-
-* Guest – selects add-on services
-* Add-On Service – represents optional feature
-* Add-On Service Manager – manages services and cost
-
----
-
-## 🔄 Flow
-
-* Guest selects one or more services
-* Services stored in a list
-* Mapped to reservation ID using a Map
-* Additional cost calculated
-* Booking and inventory remain unchanged
-
----
-
-## 🧠 Key Concepts
-
-* Business Extensibility
-* One-to-Many Relationship
-* Map + List (`Map<String, List<AddOnService>>`)
-* Composition over Inheritance
-* Separation of Concerns
-* Cost Aggregation
-
----
-
-## ✅ Features
-
-* Multiple services per reservation
-* Efficient reservation-service mapping
-* Independent cost calculation
-* Easy addition of new services
-* No impact on core booking logic
-
----
-
-## 🚀 How to Run
-
-* Compile: `javac UseCase7AddOnServiceSelection.java`
-* Run: `java UseCase7AddOnServiceSelection`
-
----
-
-## 📦 Example Services
-
-* Breakfast
-* Airport Pickup
-* Extra Bed
-
----
-
-## 🌟 Benefits
-
-* Modular and scalable design
-* Clean separation of logic
-* Real-world system modeling
-* Easy maintenance and extension
-
----
-
-## ⚠️ Previous Limitation (Use Case 6)
-
-* Bookings were static
-* No support for add-on services
-
----
-
-## 🔮 Future Enhancements
-
-* Full booking system integration
-* Bill generation
-* Database/file storage
-* GUI or web interface
-
----
-
-## 📚 Technologies
-
-* Core Java
-* Java Collections Framework
-* Object-Oriented Programming
+Project Overview
+This module extends the Hotel Booking Management System by introducing booking history tracking and reporting
+Focuses on storing confirmed reservations and enabling administrative analysis
+Demonstrates practical use of Core Java and data structures without external databases
+Objective
+Maintain a record of all confirmed bookings
+Provide operational visibility into past transactions
+Enable report generation without modifying stored data
+Actors
+Admin: Reviews booking history and generates reports
+Booking History: Stores confirmed reservations
+Booking Report Service: Processes stored data to generate reports
+Workflow
+A booking is successfully confirmed
+The reservation is added to booking history
+Booking history maintains records in insertion order
+Admin requests booking information or reports
+System retrieves and displays stored reservations
+Key Concepts Used
+List Data Structure (ArrayList) used to store reservations
+Ordered storage to maintain chronological sequence of bookings
+Separation of concerns between data storage and reporting logic
+Historical tracking to maintain an audit trail
+Persistence mindset by treating in-memory data as long-term information
+Features
+Store confirmed reservations in booking history
+Retrieve all stored reservations
+Generate detailed booking reports
+Generate summary reports including total bookings and revenue
+Ensure reporting does not modify stored data
+System Components
+Reservation class: Represents individual booking details
+BookingHistory class: Manages storage of reservations
+BookingReportService class: Generates reports from booking data
+Sample Output
+Displays customer name, room type, number of nights, and total cost
+Summary report shows total bookings and total revenue
+Key Benefits
+Provides a complete and traceable booking audit trail
+Simplifies reporting and administrative analysis
+Supports customer issue resolution through historical data
+Improves system transparency and reliability
+Limitations of Previous Use Case
+No storage of completed bookings
+No ability to review past transactions
+No reporting functionality
+Future Enhancements
+Integration with a database such as MySQL
+Export reports to formats like PDF or CSV
+Add filters based on date, room type, or customer
+Implement user authentication for admin access
+Develop a graphical user interface
+How to Run
+Compile the program using: javac UseCase8BookingHistoryReport.java
+Run the program using: java UseCase8BookingHistoryReport
+Technologies Used
+Core Java
+Java Collections Framework (ArrayList)
