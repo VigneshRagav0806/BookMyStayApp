@@ -1,58 +1,152 @@
-Project Overview
-This module extends the Hotel Booking Management System by introducing booking history tracking and reporting
-Focuses on storing confirmed reservations and enabling administrative analysis
-Demonstrates practical use of Core Java and data structures without external databases
-Objective
-Maintain a record of all confirmed bookings
-Provide operational visibility into past transactions
-Enable report generation without modifying stored data
-Actors
-Admin: Reviews booking history and generates reports
-Booking History: Stores confirmed reservations
-Booking Report Service: Processes stored data to generate reports
-Workflow
-A booking is successfully confirmed
-The reservation is added to booking history
-Booking history maintains records in insertion order
-Admin requests booking information or reports
-System retrieves and displays stored reservations
-Key Concepts Used
-List Data Structure (ArrayList) used to store reservations
-Ordered storage to maintain chronological sequence of bookings
-Separation of concerns between data storage and reporting logic
-Historical tracking to maintain an audit trail
-Persistence mindset by treating in-memory data as long-term information
-Features
-Store confirmed reservations in booking history
-Retrieve all stored reservations
-Generate detailed booking reports
-Generate summary reports including total bookings and revenue
-Ensure reporting does not modify stored data
-System Components
-Reservation class: Represents individual booking details
-BookingHistory class: Manages storage of reservations
-BookingReportService class: Generates reports from booking data
-Sample Output
-Displays customer name, room type, number of nights, and total cost
-Summary report shows total bookings and total revenue
-Key Benefits
-Provides a complete and traceable booking audit trail
-Simplifies reporting and administrative analysis
-Supports customer issue resolution through historical data
-Improves system transparency and reliability
-Limitations of Previous Use Case
-No storage of completed bookings
-No ability to review past transactions
-No reporting functionality
-Future Enhancements
-Integration with a database such as MySQL
-Export reports to formats like PDF or CSV
-Add filters based on date, room type, or customer
-Implement user authentication for admin access
-Develop a graphical user interface
-How to Run
-Compile the program using: javac UseCase8BookingHistoryReport.java
-Run the program using: java UseCase8BookingHistoryReport
-Technologies Used
-Core Java
-Java Collections Framework (ArrayList)
+# Book My Stay – Hotel Booking Management System
+
+## Overview
+
+Book My Stay is a console-based Hotel Booking Management System developed using Core Java. The project demonstrates the practical use of fundamental data structures and object-oriented programming concepts in solving real-world problems such as booking management, inventory control, and error handling.
+
+The system is designed incrementally through multiple use cases, each introducing a specific concept. The focus is on system behavior, correctness, and maintainability rather than graphical user interface design.
+
+---
+
+## Objectives
+
+* Apply Core Java concepts in a real-world application
+* Demonstrate the use of data structures for efficient system design
+* Ensure fair request handling and prevent double booking
+* Maintain consistency of room inventory
+* Implement robust validation and error handling mechanisms
+
+---
+
+## Features
+
+* Room booking management (Single, Double, Suite)
+* Inventory tracking and updates
+* Prevention of overbooking and invalid allocations
+* Structured input validation
+* Custom exception handling for booking errors
+* Fail-fast system design to detect errors early
+* Clear and informative error messages
+* Continuous system operation without crashes
+
+---
+
+## Use Case 9: Error Handling & Validation
+
+### Goal
+
+Strengthen system reliability by validating inputs and preventing invalid state changes.
+
+### Actors
+
+* Guest – Provides booking details
+* Invalid Booking Validator – Ensures correctness before processing
+
+### Workflow
+
+* Guest enters booking details
+* System validates input and constraints
+* Invalid inputs trigger immediate errors
+* System displays meaningful failure messages
+* Valid bookings are processed safely
+* System continues running without interruption
+
+---
+
+## Key Concepts Implemented
+
+* Input Validation
+  Ensures only valid data enters the system
+
+* Custom Exceptions
+  Domain-specific exceptions improve clarity and debugging
+
+* Fail-Fast Design
+  Errors are detected early to avoid cascading failures
+
+* State Protection
+  Prevents invalid updates such as negative inventory
+
+* Graceful Failure Handling
+  System handles errors without crashing
+
+* Correctness Over Happy Path
+  Handles both valid and invalid scenarios effectively
+
+---
+
+## Technologies Used
+
+* Java (Core Java)
+* Java Collections Framework (HashMap)
+* Object-Oriented Programming Principles
+
+---
+
+## Project Structure
+
+* `UseCase9ErrorHandlingValidation.java` – Main program file
+* `RoomInventory` – Manages room availability
+* `BookingService` – Handles booking logic
+* `InvalidBookingException` – Custom exception class
+
+---
+
+## How to Run
+
+### Compile the program
+
+```
+javac UseCase9ErrorHandlingValidation.java
+```
+
+### Run the program
+
+```
+java UseCase9ErrorHandlingValidation
+```
+
+Note: Java is case-sensitive. Ensure file and class names match exactly.
+
+---
+
+## Example Scenarios
+
+* Invalid room type results in an error message
+* Booking more rooms than available is prevented
+* Negative or zero booking values are rejected
+* Valid bookings update inventory correctly
+
+---
+
+## Benefits
+
+* Early detection of invalid inputs
+* Prevention of data corruption
+* Improved system stability
+* Clear debugging and maintainability
+* Real-world simulation of booking systems
+
+---
+
+## Limitations
+
+* Console-based application (no graphical interface)
+* No persistent storage (data resets on restart)
+* Single-user system (no concurrency handling)
+
+---
+
+## Future Enhancements
+
+* Add database integration for persistent storage
+* Implement multi-user concurrency control
+* Develop a web-based or GUI frontend
+* Introduce booking history and reporting features
+* Add authentication and user roles
+
+---
+
+## Conclusion
+
+This project demonstrates how proper validation and error handling significantly improve system reliability. By focusing on correctness and fail-safe mechanisms, the system reflects real-world software engineering practices and prepares learners for building scalable and maintainable applications.
