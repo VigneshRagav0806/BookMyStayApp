@@ -1,98 +1,105 @@
-# Book My Stay – Concurrent Booking Simulation (Thread Safety) (Use Case 11)
+# Book My Stay – Data Persistence & System Recovery (Use Case 12)
 
 ## Overview
 
-This module extends the Book My Stay Hotel Booking Management System by introducing concurrent booking simulation using multithreading. It demonstrates how multiple users interacting with shared system resources can lead to inconsistencies if not handled properly, and how synchronization ensures correctness.
+This module enhances the Book My Stay Hotel Booking Management System by introducing data persistence and recovery mechanisms. It ensures that critical system data such as booking history and room inventory is preserved across application restarts.
 
-The focus of this use case is on maintaining data integrity and preventing race conditions when multiple booking requests are processed simultaneously.
+The implementation demonstrates how in-memory data can be serialized into a file and later restored, enabling the system to resume operations from its last known valid state.
 
 ---
 
 ## Objective
 
-* Simulate multiple users booking rooms concurrently
-* Demonstrate issues caused by race conditions
-* Ensure thread-safe access to shared resources
-* Maintain consistent inventory under concurrent load
+* Persist booking and inventory data to a file
+* Restore system state during application startup
+* Ensure continuity of system operations across restarts
+* Handle missing or corrupted data safely
 
 ---
 
 ## Features
 
-* Multi-threaded booking request simulation
-* Shared booking queue for concurrent processing
-* Thread-safe room allocation
-* Synchronized access to inventory
-* Prevention of double booking
-* Consistent system behavior under concurrent execution
+* File-based persistence using serialization
+* Automatic state restoration on system startup
+* Inventory snapshot storage and recovery
+* Booking history preservation
+* Graceful handling of missing or corrupted files
+* Seamless continuation of system operations
 
 ---
 
-## Use Case 11: Concurrent Booking Simulation
+## Use Case 12: Data Persistence & System Recovery
 
 ### Goal
 
-Ensure correct room allocation when multiple booking requests are processed simultaneously.
+Ensure that system state survives application shutdown and restart.
 
 ### Actors
 
-* Multiple Guests – Submit booking requests at the same time
-* Concurrent Booking Processor – Handles requests using multiple threads
+* System – Initiates save and load operations
+* Persistence Service – Handles file storage and retrieval
 
 ### Workflow
 
-* Multiple booking requests are generated concurrently
-* Requests are placed in a shared queue
-* Threads fetch requests in a controlled manner
-* Inventory updates occur inside synchronized blocks
-* System processes all requests without inconsistencies
+* System prepares for shutdown
+* Current state (inventory + bookings) is serialized
+* Data is written to a file
+* On restart, persisted data is loaded
+* System restores inventory and booking state
+* Application resumes normal operation
 
 ---
 
 ## Key Concepts Implemented
 
-### Race Conditions
+### Stateful Applications
 
-Occurs when multiple threads modify shared data simultaneously, leading to unpredictable outcomes.
+Maintains data across multiple executions instead of resetting on restart.
 
-### Thread Safety
+### Persistence
 
-Ensures shared resources behave correctly under concurrent access.
+Stores application data in a durable medium (file system).
 
-### Shared Mutable State
+### Serialization
 
-Inventory and booking queue are shared among threads and require controlled access.
+Converts objects into a byte stream for storage.
 
-### Critical Sections
+### Deserialization
 
-Sections of code that modify shared data are protected to allow only one thread at a time.
+Reconstructs objects from stored data back into memory.
 
-### Synchronized Access
+### Inventory Snapshot
 
-Uses Java synchronization to prevent conflicting updates.
+Captures system state at a specific moment for accurate recovery.
 
-### Concurrency vs Parallelism
+### Failure Tolerance
 
-Focuses on correctness of overlapping operations rather than execution speed.
+Handles missing or corrupted data without crashing the system.
+
+### Preparation for Database Systems
+
+Introduces persistence concepts before transitioning to databases.
 
 ---
 
 ## Technologies Used
 
 * Java (Core Java)
-* Java Multithreading (Thread, Runnable)
-* Java Collections Framework (Queue, HashMap)
-* Synchronization (synchronized blocks/methods)
+* Java I/O Streams
+* Serialization (`Serializable` interface)
+* Object Streams (`ObjectInputStream`, `ObjectOutputStream`)
+* Java Collections Framework (HashMap)
 
 ---
 
 ## Project Structure
 
-* `UseCase11ConcurrentBookingSimulation.java` – Main program file
-* `RoomInventory` – Shared inventory with synchronized updates
-* `BookingRequest` – Represents a booking request
-* `BookingProcessor` – Runnable class handling requests
-* `SharedQueue` – Thread-safe request queue
+* `UseCase12DataPersistenceRecovery.java` – Main program file
+* `RoomInventory` – Manages inventory state
+* `BookingService` – Handles booking operations
+* `Booking` – Represents booking data
+* `SystemState` – Wrapper class for persistence
+* `PersistenceService` – Handles saving and loading data
 
 ---
 
@@ -100,55 +107,56 @@ Focuses on correctness of overlapping operations rather than execution speed.
 
 ### Compile the program
 
-```id="c1"
-javac UseCase11ConcurrentBookingSimulation.java
+```id="r1"
+javac UseCase12DataPersistenceRecovery.java
 ```
 
 ### Run the program
 
-```id="c2"
-java UseCase11ConcurrentBookingSimulation
+```id="r2"
+java UseCase12DataPersistenceRecovery
 ```
 
-Note: Java is case-sensitive. Ensure class and file names match exactly.
+Note: Java is case-sensitive. Ensure file and class names match exactly.
 
 ---
 
-## Example Scenario
+## Example Scenarios
 
-* Multiple threads attempt to book rooms at the same time
-* Without synchronization → Overbooking may occur
-* With synchronization → Inventory remains consistent and correct
+* First run starts with default inventory and empty bookings
+* After saving, restarting restores previous bookings and inventory
+* Missing file → system starts fresh without crashing
+* Corrupted file → system falls back to safe defaults
 
 ---
 
 ## Benefits
 
-* Prevents race conditions and data corruption
-* Ensures correct booking under concurrent load
-* Simulates real-world multi-user systems
-* Builds foundation for scalable applications
+* Prevents data loss across restarts
+* Reflects real-world system behavior
+* Improves reliability and user trust
+* Introduces durability concepts essential for production systems
 
 ---
 
 ## Limitations
 
-* Console-based simulation (no GUI)
-* No persistent storage
-* Limited to basic thread synchronization (no advanced concurrency tools)
+* File-based storage (not suitable for large-scale systems)
+* No concurrency handling in persistence
+* Data format is not human-readable (binary serialization)
 
 ---
 
 ## Future Enhancements
 
-* Use advanced concurrency utilities (Locks, Executors)
-* Add database-level concurrency control
-* Implement real-time booking system with REST APIs
-* Introduce load testing and performance metrics
-* Build web-based multi-user interface
+* Replace file storage with database (MySQL, PostgreSQL)
+* Use JSON/XML for readable persistence
+* Add backup and recovery mechanisms
+* Implement versioning for stored data
+* Introduce concurrency-safe persistence
 
 ---
 
 ## Conclusion
 
-This use case highlights the importance of thread safety in systems where multiple users interact simultaneously. By introducing synchronization and controlled access to shared resources, the system ensures correctness, reliability, and consistency under concurrent conditions.
+This use case demonstrates the importance of persistence in real-world applications. By enabling data storage and recovery, the system evolves from a temporary in-memory model to a more durable and production-ready design.
