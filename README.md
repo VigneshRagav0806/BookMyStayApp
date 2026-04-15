@@ -1,103 +1,98 @@
-# Book My Stay – Booking Cancellation & Inventory Rollback (Use Case 10)
+# Book My Stay – Concurrent Booking Simulation (Thread Safety) (Use Case 11)
 
 ## Overview
 
-This module extends the Book My Stay Hotel Booking Management System by introducing booking cancellation functionality with safe rollback mechanisms. It ensures that previously confirmed bookings can be reversed without compromising system consistency or inventory accuracy.
+This module extends the Book My Stay Hotel Booking Management System by introducing concurrent booking simulation using multithreading. It demonstrates how multiple users interacting with shared system resources can lead to inconsistencies if not handled properly, and how synchronization ensures correctness.
 
-The implementation focuses on controlled state reversal, ensuring that all system changes made during booking are properly undone during cancellation.
+The focus of this use case is on maintaining data integrity and preventing race conditions when multiple booking requests are processed simultaneously.
 
 ---
 
 ## Objective
 
-* Enable safe cancellation of confirmed bookings
-* Maintain accurate inventory after cancellations
-* Ensure consistent system state through rollback mechanisms
-* Prevent invalid or duplicate cancellation requests
+* Simulate multiple users booking rooms concurrently
+* Demonstrate issues caused by race conditions
+* Ensure thread-safe access to shared resources
+* Maintain consistent inventory under concurrent load
 
 ---
 
 ## Features
 
-* Booking creation with inventory allocation
-* Booking cancellation with rollback support
-* Inventory restoration after cancellation
-* Booking history tracking with status (Active/Cancelled)
-* Stack-based rollback tracking (LIFO order)
-* Validation of booking existence before cancellation
-* Prevention of duplicate cancellations
-* Stable and predictable system behavior
+* Multi-threaded booking request simulation
+* Shared booking queue for concurrent processing
+* Thread-safe room allocation
+* Synchronized access to inventory
+* Prevention of double booking
+* Consistent system behavior under concurrent execution
 
 ---
 
-## Use Case 10: Booking Cancellation & Inventory Rollback
+## Use Case 11: Concurrent Booking Simulation
 
 ### Goal
 
-Allow users to cancel bookings while safely reversing all related system changes.
+Ensure correct room allocation when multiple booking requests are processed simultaneously.
 
 ### Actors
 
-* Guest – Initiates booking cancellation
-* Cancellation Service – Validates and processes rollback
+* Multiple Guests – Submit booking requests at the same time
+* Concurrent Booking Processor – Handles requests using multiple threads
 
 ### Workflow
 
-* Guest requests cancellation using Booking ID
-* System validates booking existence and status
-* Booking ID is pushed into rollback stack
-* Inventory is restored for the cancelled booking
-* Booking status is updated to "Cancelled"
-* System maintains consistent state after operation
+* Multiple booking requests are generated concurrently
+* Requests are placed in a shared queue
+* Threads fetch requests in a controlled manner
+* Inventory updates occur inside synchronized blocks
+* System processes all requests without inconsistencies
 
 ---
 
 ## Key Concepts Implemented
 
-### State Reversal
+### Race Conditions
 
-Reverts previously completed booking operations to maintain system consistency.
+Occurs when multiple threads modify shared data simultaneously, leading to unpredictable outcomes.
 
-### Stack Data Structure
+### Thread Safety
 
-Uses `Stack<String>` to store cancelled booking IDs and track rollback history.
+Ensures shared resources behave correctly under concurrent access.
 
-### LIFO Rollback Logic
+### Shared Mutable State
 
-Latest booking cancellations are handled first, mimicking real-world undo operations.
+Inventory and booking queue are shared among threads and require controlled access.
 
-### Controlled Mutation
+### Critical Sections
 
-Ensures rollback steps are executed in a strict sequence to avoid partial updates.
+Sections of code that modify shared data are protected to allow only one thread at a time.
 
-### Inventory Restoration
+### Synchronized Access
 
-Immediately updates room availability after cancellation.
+Uses Java synchronization to prevent conflicting updates.
 
-### Validation
+### Concurrency vs Parallelism
 
-Prevents:
-
-* Cancellation of non-existent bookings
-* Duplicate cancellation of the same booking
+Focuses on correctness of overlapping operations rather than execution speed.
 
 ---
 
 ## Technologies Used
 
 * Java (Core Java)
-* Java Collections Framework (HashMap, Stack)
-* Object-Oriented Programming
+* Java Multithreading (Thread, Runnable)
+* Java Collections Framework (Queue, HashMap)
+* Synchronization (synchronized blocks/methods)
 
 ---
 
 ## Project Structure
 
-* `UseCase10BookingCancellation.java` – Main program file
-* `RoomInventory` – Manages room availability and updates
-* `BookingService` – Handles booking and cancellation logic
-* `Booking` – Represents booking data
-* `BookingException` – Custom exception class
+* `UseCase11ConcurrentBookingSimulation.java` – Main program file
+* `RoomInventory` – Shared inventory with synchronized updates
+* `BookingRequest` – Represents a booking request
+* `BookingProcessor` – Runnable class handling requests
+* `SharedQueue` – Thread-safe request queue
 
 ---
 
@@ -105,56 +100,55 @@ Prevents:
 
 ### Compile the program
 
-```
-javac UseCase10BookingCancellation.java
+```id="c1"
+javac UseCase11ConcurrentBookingSimulation.java
 ```
 
 ### Run the program
 
-```
-java UseCase10BookingCancellation
+```id="c2"
+java UseCase11ConcurrentBookingSimulation
 ```
 
 Note: Java is case-sensitive. Ensure class and file names match exactly.
 
 ---
 
-## Example Scenarios
+## Example Scenario
 
-* Cancelling a valid booking restores inventory correctly
-* Cancelling a non-existent booking displays an error
-* Attempting to cancel an already cancelled booking is rejected
-* Rollback stack maintains recent cancellations in LIFO order
+* Multiple threads attempt to book rooms at the same time
+* Without synchronization → Overbooking may occur
+* With synchronization → Inventory remains consistent and correct
 
 ---
 
 ## Benefits
 
-* Ensures safe recovery from booking operations
-* Maintains consistent inventory state
-* Provides predictable rollback behavior
-* Enhances system reliability and correctness
+* Prevents race conditions and data corruption
+* Ensures correct booking under concurrent load
+* Simulates real-world multi-user systems
+* Builds foundation for scalable applications
 
 ---
 
 ## Limitations
 
-* Console-based application (no GUI)
-* No persistent storage (data resets on restart)
-* Single-user system (no concurrency support)
+* Console-based simulation (no GUI)
+* No persistent storage
+* Limited to basic thread synchronization (no advanced concurrency tools)
 
 ---
 
 ## Future Enhancements
 
-* Add undo functionality for cancellations
-* Integrate database for persistent storage
-* Implement multi-user concurrency control
-* Develop web or GUI-based interface
-* Add detailed booking reports and analytics
+* Use advanced concurrency utilities (Locks, Executors)
+* Add database-level concurrency control
+* Implement real-time booking system with REST APIs
+* Introduce load testing and performance metrics
+* Build web-based multi-user interface
 
 ---
 
 ## Conclusion
 
-This use case demonstrates how rollback mechanisms can be implemented using stacks and controlled state changes. By ensuring that cancellations are handled safely and consistently, the system reflects real-world requirements for reliable and maintainable booking systems.
+This use case highlights the importance of thread safety in systems where multiple users interact simultaneously. By introducing synchronization and controlled access to shared resources, the system ensures correctness, reliability, and consistency under concurrent conditions.
